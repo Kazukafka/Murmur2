@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "RumoR",
-    "slug": "SignalClone",
+    "name": "MurmurV2",
+    "slug": "murmur",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -30,6 +30,7 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "description": ""
+    "description": "murmur -> RumoR -> Murmur2 ",
+    "githubUrl": "https://github.com/Kazukafka/Murmur2"
   }
 }
