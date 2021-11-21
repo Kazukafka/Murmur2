@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MurmurV2",
-    "slug": "murmur",
+    "name": "MurmurV4",
+    "slug": "murmur4",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -30,7 +30,7 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "description": "murmur -> RumoR -> Murmur2 ",
-    "githubUrl": "https://github.com/Kazukafka/Murmur2"
+    "description": "murmur -> RumoR -> Murmur2 \nv4 user status & last seen online",
+    "githubUrl": "https://github.com/Kazukafka/Murmur2V4"
   }
 }
