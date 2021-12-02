@@ -4,17 +4,22 @@ import { useNavigation } from '@react-navigation/core';
 import styles from './styles';
 import { Feather } from '@expo/vector-icons';
 
-export default function UserItem({ user, onPress, isSelected }) { // null \ false | true
+export default function UserItem({
+  user,
+  onPress,
+  onLongPress,
+  isSelected,
+  isAdmin = false
+}) { // null \ false | true
   const navigation = useNavigation();
 
   return (
-    <Pressable onPress={onPress} style={styles.container}>
+    <Pressable onPress={onPress} onLongPress={onLongPress} style={styles.container}>
       <Image source={{ uri: user.imageUri }} style={styles.image} />
 
       <View style={styles.rightContainer}>
-        <View style={styles.row}>
-          <Text style={styles.name}>{user.name}</Text>
-        </View>
+        <Text style={styles.name}>{user.name}</Text>
+        {isAdmin && <Text>admin</Text>}
       </View>
 
       {/* <Feather name={isSelected ? 'check-circle' : 'circle'} size={20} color="#4f4f4f" /> */}

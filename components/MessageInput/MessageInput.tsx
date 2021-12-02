@@ -267,7 +267,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
               style={{
                 height: 5,
                 borderRadius: 5,
-                backgroundColor: '#3777f0',
+                backgroundColor: '#8a2be2',
                 width: `${progress * 100}%`,
                 // marginLeft: "auto",
                 // ↑だとsendImageContainerがあるので左にならないため、も一つ大きなViewで包む
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: 40,
     height: 40,
-    backgroundColor: '#3777f0',
+    backgroundColor: '#8a2be2',
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center'

@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, Image, useWindowDimensions } from 'react-native';
+import { Text, View, Image, useWindowDimensions, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Auth, DataStore } from "aws-amplify";
 import { ChatRoom, ChatRoomUser, User } from "../src/models";
 import moment from "moment";
+import { useNavigation } from "@react-navigation/core";
 // ({id, children})でWarning、理由はChildrenが使われてないから
 const ChatRoomHeader = ({ id }) => {
   const { width } = useWindowDimensions();
   const [user, setUser] = useState<User | null>(null);
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [chatRoom, setChatRoom] = useState<ChatRoom | undefined>(undefined);
+
+  const navigation = useNavigation();
 
   const fetchUsers = async () => {
     const fetchedUsers = (await DataStore.query(ChatRoomUser))
@@ -52,6 +55,11 @@ const ChatRoomHeader = ({ id }) => {
     return allUsers.map(user => user.name).join(', ');
   };
 
+  const openInfo = () => {
+    // resirect to info page
+    navigation.navigate("GroupInfoScreen", { id });
+  }
+
   const isGroup = allUsers.length > 2;
 
   return (
@@ -69,14 +77,14 @@ const ChatRoomHeader = ({ id }) => {
         }}
         style={{ width: 30, height: 30, borderRadius: 30 }}
       />
-      <View style={{ flex: 1, marginLeft: 10 }}>
+      <Pressable onPress={openInfo} style={{ flex: 1, marginLeft: 10 }}>
         <Text style={{ fontWeight: 'bold' }}>
           {chatRoom?.name || user?.name}
         </Text>
         <Text numberOfLines={1}>
           {isGroup ? getUsernames() : getLastOnlineText()}
         </Text>
-      </View>
+      </Pressable>
       <Feather name="camera" size={24} color="black" style={{ marginHorizontal: 10 }} />
       <Feather name="edit-2" size={24} color="black" style={{ marginHorizontal: 10 }} />
     </View>

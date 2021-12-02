@@ -12,7 +12,8 @@ export default function TabOneScreen() {
 
   useEffect(() => {
     const fetchChatRooms = async () => {
-      const userData = await Auth.currentAuthenticatedUser();
+      const userData = await (await Auth.currentAuthenticatedUser());
+      // ↑二重Awaitしないとデータを取得に時間がかかり再度ログインが必要になる、、、おそらくAuthのデフォ問題？？？
 
       //Consoleで出力をこまめに確認して、filiterで所有者のChatRoomを、mapでChatRoom単体を取り出す
       const chatRooms = (await DataStore.query(ChatRoomUser))
@@ -24,7 +25,8 @@ export default function TabOneScreen() {
     fetchChatRooms();
   }, [])
 
-  const logOut = () => {
+  const logOut = async () => {
+    //await DataStore.clear();
     Auth.signOut();
   }
 
