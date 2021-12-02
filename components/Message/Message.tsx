@@ -5,7 +5,7 @@ import { User } from '../../src/models';
 import { Auth, Storage } from 'aws-amplify';
 import { S3Image } from 'aws-amplify-react-native';
 import AudioPlayer from '../AudioPlayer';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { Message as MessageModel } from "../../src/models";
 import MessageReply from '../MessageReply';
 
@@ -113,8 +113,8 @@ const Message = (props) => {
         )}
 
         {isMe && message.status && message.status !== 'SENT' && (
-          <Ionicons
-            name={message.status === 'DELIVERED' ? "checkmark" : "checkmark-done"}
+          <AntDesign
+            name={message.status === 'DELIVERED' ? "checkcircleo" : "checkcircle"}
             size={16}
             color="grey"
             style={{ marginHorizontal: 5 }}

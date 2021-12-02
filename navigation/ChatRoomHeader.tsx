@@ -2,27 +2,37 @@ import React, { useEffect, useState } from "react";
 import { Text, View, Image, useWindowDimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Auth, DataStore } from "aws-amplify";
-import { ChatRoomUser, User } from "../src/models";
+import { ChatRoom, ChatRoomUser, User } from "../src/models";
 import moment from "moment";
 // ({id, children})でWarning、理由はChildrenが使われてないから
 const ChatRoomHeader = ({ id }) => {
   const { width } = useWindowDimensions();
   const [user, setUser] = useState<User | null>(null);
-  // ↓ここのuseEffectはChatRoomItem.tsxからのコピペ
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [chatRoom, setChatRoom] = useState<ChatRoom | undefined>(undefined);
+
+  const fetchUsers = async () => {
+    const fetchedUsers = (await DataStore.query(ChatRoomUser))
+      .filter(chatRoomUser => chatRoomUser.chatroom.id === id)
+      .map(chatRoomUser => chatRoomUser.user);
+
+    setAllUsers(fetchedUsers);
+
+    const authUser = await Auth.currentAuthenticatedUser();
+    setUser(fetchedUsers.find(user => user.id !== authUser.attributes.sub) || null);
+  };
+
+  const fetchChatRoom = async () => {
+    DataStore.query(ChatRoom, id).then(setChatRoom);//nullではなくundefinedで定義
+  }
+
   useEffect(() => {
     if (!id) {
       return;
     }
 
-    const fetchUsers = async () => {
-      const fetchedUsers = (await DataStore.query(ChatRoomUser))
-        .filter(chatRoomUser => chatRoomUser.chatroom.id === id)
-        .map(chatRoomUser => chatRoomUser.user);
-
-      const authUser = await Auth.currentAuthenticatedUser();
-      setUser(fetchedUsers.find(user => user.id !== authUser.attributes.sub) || null);
-    };
     fetchUsers();
+    fetchChatRoom();
   }, []);
 
   const getLastOnlineText = () => {
@@ -38,6 +48,12 @@ const ChatRoomHeader = ({ id }) => {
     }
   };
 
+  const getUsernames = () => {
+    return allUsers.map(user => user.name).join(', ');
+  };
+
+  const isGroup = allUsers.length > 2;
+
   return (
     <View style={{
       flexDirection: 'row',
@@ -48,14 +64,18 @@ const ChatRoomHeader = ({ id }) => {
       alignItems: 'center',
     }}>
       <Image
-        source={{ uri: user?.imageUri }}
+        source={{
+          uri: chatRoom?.imageUri || user?.imageUri
+        }}
         style={{ width: 30, height: 30, borderRadius: 30 }}
       />
       <View style={{ flex: 1, marginLeft: 10 }}>
         <Text style={{ fontWeight: 'bold' }}>
-          {user?.name}
+          {chatRoom?.name || user?.name}
         </Text>
-        <Text>{getLastOnlineText()}</Text>
+        <Text numberOfLines={1}>
+          {isGroup ? getUsernames() : getLastOnlineText()}
+        </Text>
       </View>
       <Feather name="camera" size={24} color="black" style={{ marginHorizontal: 10 }} />
       <Feather name="edit-2" size={24} color="black" style={{ marginHorizontal: 10 }} />

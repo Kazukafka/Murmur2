@@ -35,8 +35,8 @@ export default function TabOneScreen() {
         renderItem={({ item }) => <ChatRoomItem chatRoom={item} />}
         showsVerticalScrollIndicator={false}
       />
-      <Pressable onPress={logOut} style={{ backgroundColor: 'violet', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Logout</Text>
+      <Pressable onPress={logOut} style={{ backgroundColor: '#8a2be2', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: 'white' }}>Logout</Text>
       </Pressable>
     </View>
 

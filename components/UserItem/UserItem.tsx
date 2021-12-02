@@ -2,38 +2,10 @@ import React from 'react';
 import { Text, Image, View, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import styles from './styles';
-import { Auth, DataStore } from 'aws-amplify';
-import { ChatRoom, User, ChatRoomUser } from '../../src/models';
+import { Feather } from '@expo/vector-icons';
 
-export default function UserItem({ user }) {
+export default function UserItem({ user, onPress, isSelected }) { // null \ false | true
   const navigation = useNavigation();
-
-  const onPress = async () => {
-    // TODO if there is already a chat room between these 2 users
-    // Then redirect to the existing chat room
-    // otherwise, create a new chatroom with these users
-
-    // Create a chat room
-    const newChatRoom = await DataStore.save(new ChatRoom({ newMessages: 0 }))
-    // const newChatRoom = await DataStore.save(new ChatRoom({ newMessages: 0 }));
-
-    // チャットルームに紐付けられた認証済みのUserをつなげる
-    const authUser = await Auth.currentAuthenticatedUser();
-    const dbUser = await DataStore.query(User, authUser.attributes.sub);
-
-    await DataStore.save(new ChatRoomUser({
-      user: dbUser,
-      chatroom: newChatRoom
-    }))
-
-    // クリックした認証済みのUserをつなげる
-    await DataStore.save(new ChatRoomUser({
-      user,
-      chatroom: newChatRoom
-    }))
-
-    navigation.navigate('ChatRoom', { id: newChatRoom.id });
-  }
 
   return (
     <Pressable onPress={onPress} style={styles.container}>
@@ -44,6 +16,14 @@ export default function UserItem({ user }) {
           <Text style={styles.name}>{user.name}</Text>
         </View>
       </View>
+
+      {/* <Feather name={isSelected ? 'check-circle' : 'circle'} size={20} color="#4f4f4f" /> */}
+      {/* 上だと１−１のチャットルーム作成と区別できない、よってisSelected=nullをisSelectedのまま残し、↓で調整 */}
+      {isSelected !== undefined && (
+        <Feather name={isSelected ? 'check-circle' : 'circle'} size={20} color="#4f4f4f" />
+      )}
+      {/* ↑null は何かを返すべきですが、返すものがない場合。 意図的に使われる。 
+      undefined はただ何もない状態。 何も return しない関数の返り値などは全て undefined です */}
     </Pressable>
   );
 }

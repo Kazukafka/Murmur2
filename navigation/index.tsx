@@ -74,8 +74,8 @@ const HomeHeader = (props) => {
       alignItems: 'center',
     }}>
       <Image
-        source={{ uri: 'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/0a402963-ac09-48a2-a194-fa5e34e3cfd5/de3lbnb-e1c66dc3-182c-4f27-acf7-d1c5a2f6d02b.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzBhNDAyOTYzLWFjMDktNDhhMi1hMTk0LWZhNWUzNGUzY2ZkNVwvZGUzbGJuYi1lMWM2NmRjMy0xODJjLTRmMjctYWNmNy1kMWM1YTJmNmQwMmIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.PeXeP3RbjOb-S8eWfEy3WlCRgCT7bsqxlqPaz5FVOfg' }}
-        style={{ width: 30, height: 30, borderRadius: 30 }}
+        source={{ uri: 'https://64.media.tumblr.com/8d5b2654dd80b4e16017b960117a3e1a/8c79d50e0fe4e9b2-b1/s1280x1920/03a0058c1576d078275edbfd0cb6b9d708fb41bc.png' }}
+        style={{ width: 35, height: 35, borderRadius: 8 }}
       />
       <Text style={{ flex: 1, textAlign: 'center', marginLeft: 50, fontWeight: 'bold' }}>Murmur</Text>
       <Feather name="camera" size={24} color="purple" style={{ marginHorizontal: 10 }} />
