@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MurmurV5p2",
-    "slug": "murmur5p2",
+    "name": "Murmur5v3",
+    "slug": "murmur5v3",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -30,7 +30,6 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "description": "murmur -> RumoR -> Murmur2 \nv5 message replies p2 logo added",
-    "githubUrl": "https://github.com/Kazukafka/Murmur2/V5p2"
+    "description": "murmur -> RumoR -> Murmur2 \nv5 message replies p2 logo added\n"
   }
 }

@@ -12,6 +12,7 @@ export default function ChatRoomItem({ chatRoom }) {
   // const [users, setUsers] = useState<User[]>([]); // このChatRoomのすべてのUser
   const [user, setUser] = useState<User | null>(null); //user"S"ではなく「displayUser」であることに注意
   const [lastMessage, setLastMessage] = useState<Message | undefined>();
+  const [isLoading, setIsLoading] = useState(true);
 
   const navigation = useNavigation();
 
@@ -25,6 +26,7 @@ export default function ChatRoomItem({ chatRoom }) {
       // user => user.id !== authUser.attributes.subが===だと自分の画像になる
       // 個別のチャットをつなげてグループチャットにするのではなく、人数が二人なのが個別のチャットだと考える
       setUser(fetchedUsers.find(user => user.id !== authUser.attributes.sub) || null);
+      setIsLoading(false);
     };
     fetchUsers();
   }, []);
@@ -38,7 +40,7 @@ export default function ChatRoomItem({ chatRoom }) {
     navigation.navigate('ChatRoom', { id: chatRoom.id });
   }
 
-  if (!user) {
+  if (isLoading) {
     return <ActivityIndicator />
   }
 
@@ -47,7 +49,7 @@ export default function ChatRoomItem({ chatRoom }) {
   return (
     <Pressable onPress={onPress} style={styles.container}>
       <Image
-        source={{ uri: chatRoom.imageUri || user.imageUri }}
+        source={{ uri: chatRoom.imageUri || user?.imageUri }}
         style={styles.image}
       />
 
@@ -57,7 +59,7 @@ export default function ChatRoomItem({ chatRoom }) {
 
       <View style={styles.rightContainer}>
         <View style={styles.row}>
-          <Text style={styles.name}>{chatRoom.name || user.name}</Text>
+          <Text style={styles.name}>{chatRoom.name || user?.name}</Text>
           <Text style={styles.text}>{time}</Text>
         </View>
         <Text numberOfLines={1} style={styles.text}>{lastMessage?.content}</Text>

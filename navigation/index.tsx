@@ -16,6 +16,7 @@ import LinkingConfiguration from './LinkingConfiguration';
 import ChatRoomScreen from '../screens/ChatRoomScreen';
 import HomeScreen from '../screens/HomeScreen';
 import UsersScreen from '../screens/UsersScreen';
+import Settings from '../screens/Settings';
 
 import ChatRoomHeader from './ChatRoomHeader';
 import GroupInfoScreen from '../screens/GroupInfoScreen';
@@ -58,6 +59,10 @@ function RootNavigator() {
         }}
       />
       <Stack.Screen
+        name="Settings"
+        component={Settings}
+      />
+      <Stack.Screen
         name="UsersScreen"
         component={UsersScreen}
         options={{
@@ -86,9 +91,11 @@ const HomeHeader = (props) => {
         style={{ width: 35, height: 35, borderRadius: 8 }}
       />
       <Text style={{ flex: 1, textAlign: 'center', marginLeft: 50, fontWeight: 'bold' }}>Murmur</Text>
-      <Feather name="camera" size={24} color="purple" style={{ marginHorizontal: 10 }} />
+      <Pressable onPress={() => navigation.navigate('Settings')}>
+        <Feather name="settings" size={24} color="purple" style={{ marginHorizontal: 10 }} />
+      </Pressable>
       <Pressable onPress={() => navigation.navigate('UsersScreen')}>
-        <Feather name="edit-2" size={24} color="purple" style={{ marginHorizontal: 10 }} />
+        <Feather name="edit" size={24} color="purple" style={{ marginHorizontal: 10 }} />
       </Pressable>
     </View>
   )
