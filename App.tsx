@@ -22,7 +22,6 @@ const pairA = generateKeyPair();
 const pairB = generateKeyPair();
 
 const sharedA = box.before(pairB.publicKey, pairA.secretKey);
-
 const encrypted = encrypt(sharedA, obj);
 
 const sharedB = box.before(pairA.publicKey, pairB.secretKey);

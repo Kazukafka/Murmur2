@@ -57,7 +57,7 @@ const MessageReply = (props) => {
 
       <View style={styles.row}>
         {message.image && (
-          <View style={{ marginBottom: message.content ? 10 : 0 }}>
+          <View style={{ marginBottom: message.content ? 20 : 0 }}>
             {/* 写真送信時の不自然な下の余白を消す↓ 上のmarginBottomも調整 */}
             <S3Image
               imgKey={message.image}

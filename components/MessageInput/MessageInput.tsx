@@ -7,7 +7,8 @@ import {
   TextInput,
   Pressable,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { SimpleLineIcons, Feather, MaterialCommunityIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import { DataStore } from '@aws-amplify/datastore';
@@ -19,10 +20,14 @@ import * as ImagePicker from 'expo-image-picker';
 import 'react-native-get-random-values';
 // ↓だけだと「Unhandled promise rejection: Error: crypto.getRandomValues() not supported.」エラーが起きる
 import { v4 as uuidv4 } from 'uuid';
-import { Audio, AVPlaybackStatus } from 'expo-av';
-import start from "fs";
+import { Audio } from 'expo-av';
 import AudioPlayer from '../AudioPlayer';
 import MessageComponent from '../Message';
+import { ChatRoomUser } from '../../src/models';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/core';
+import { box } from 'tweetnacl';
+import { encrypt, getMySecretKey, stringToUint8Array } from '../../utils/crypt';
 
 const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
   const [message, setMessage] = useState('');
@@ -31,6 +36,8 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
   const [progress, setProgress] = useState(0);
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [soundURI, setSoundURI] = useState<string | null>(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -46,20 +53,58 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
     })();
   }, []);
 
-  const sendMessage = async () => {
+  const sendMessageToUser = async (user, fromUserId) => {
     // send message
-    // console.warn("sending: ", message);
-    const user = await Auth.currentAuthenticatedUser();
-    const newMessage = await DataStore.save(new Message({
-      content: message,
-      userID: user.attributes.sub,
-      // ChatRoomScreen.tsxから受け取ったchatRoomId↓ chatRoomという大きめの配列を受け取りupdateLastMessageに使う
-      chatroomID: chatRoom.id,
-      status: "SENT",
-      replyToMessageID: messageReplyTo?.id
-    }))
+    const ourSecretKey = await getMySecretKey();
 
-    updateLastMessage(newMessage);
+    if (!ourSecretKey) {
+      return;
+    }
+
+    if (!user.publicKey) {
+      Alert.alert(
+        "The user have not set your keypair yet",
+        "Until the user generate the keypair, you cannot secure message",
+      );
+      return;
+    }
+
+    console.log('privateKey is ', ourSecretKey);
+
+    const sharedKey = box.before(
+      stringToUint8Array(user.publicKey),
+      ourSecretKey,
+    );
+
+    const encryptedMessage = encrypt(sharedKey, { message });
+    console.log("encrypted message", encryptedMessage);
+
+    const newMessage = await DataStore.save(
+      new Message({
+        content: encryptedMessage, // <-ここが暗号化される
+        userID: fromUserId,
+        forUserId: user.id,
+        // ChatRoomScreen.tsxから受け取ったchatRoomId↓ chatRoomという大きめの配列を受け取りupdateLastMessageに使う
+        chatroomID: chatRoom.id,
+        status: "SENT",
+        replyToMessageID: messageReplyTo?.id
+      })
+    );
+    // updateLastMessage(newMessage);
+  }
+
+  const sendMessage = async () => {
+    // get all users of this chatroom
+    const authUser = await Auth.currentAuthenticatedUser();
+
+    const users = await (await DataStore.query(ChatRoomUser))
+      .filter((cru) => cru.chatroom.id === chatRoom.id)
+      .map((cru) => cru.user);
+
+    console.log("users", users);
+
+    // for each user, encrypt the 'content'
+    await Promise.all(users.map((user) => sendMessageToUser(user, authUser.attributes.sub)));
 
     resetFields();
   }

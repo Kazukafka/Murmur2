@@ -9,6 +9,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { Message as MessageModel } from "../../src/models";
 import MessageReply from '../MessageReply';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import { box } from 'tweetnacl';
+import { decrypt, getMySecretKey, stringToUint8Array } from '../../utils/crypt';
 
 const blue = '#8a2be2'; // blueviolet
 const grey = 'lightgrey';
@@ -17,6 +19,7 @@ const Message = (props) => {
   const { setAsMessageReply, message: propMessage } = props;
 
   const [message, setMessage] = useState<MessageModel>(propMessage);
+  const [decryptedContent, setDecryptedContent] = useState("");
   const [repliedTo, setRepliedTo] = useState<MessageModel | undefined>(undefined);
   const [user, setUser] = useState<User | undefined>();
   const [isMe, setIsMe] = useState<boolean | null>(null);
@@ -77,6 +80,27 @@ const Message = (props) => {
     }
     checkIfMe();
   }, [user]);
+
+  useEffect(() => {
+    if (!message?.content || !user?.publicKey) {
+      return;
+    }
+
+    const decryptMessage = async () => {
+      const myKey = await getMySecretKey();
+      if (!myKey) {
+        return;
+      }
+      // decrypt message.content
+      const sharedKey = box.before(stringToUint8Array(user.publicKey), myKey);
+      // console.log("sharedKey", sharedKey);
+      const decrypted = decrypt(sharedKey, message.content);
+      // console.log("decrypted", decrypted);
+      setDecryptedContent(decrypted.message);
+    };
+
+    decryptMessage();
+  }, [message, user]);
 
   const setAsRead = async () => {
     if (isMe === false && message.status !== "READ") {
@@ -149,7 +173,7 @@ const Message = (props) => {
 
       <View style={styles.row}>
         {message.image && (
-          <View style={{ marginBottom: message.content ? 10 : 0 }}>
+          <View style={{ marginBottom: decryptedContent ? 5 : 0 }}>
             {/* 写真送信時の不自然な下の余白を消す↓ 上のmarginBottomも調整 */}
             <S3Image
               imgKey={message.image}
@@ -160,9 +184,9 @@ const Message = (props) => {
         )}
 
         {soundURI && <AudioPlayer soundURI={soundURI} />}
-        {!!message.content && (
+        {!!decryptedContent && (
           <Text style={{ color: isMe ? 'black' : 'white' }}>
-            {isDeleted ? "This message has been deleted" : message.content}
+            {isDeleted ? "This message has been deleted" : decryptedContent}
           </Text>
         )}
 
