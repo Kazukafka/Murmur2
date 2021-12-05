@@ -29,6 +29,7 @@
     "aws-amplify-react-native": "^6.0.1",
     "cli": "^1.0.1",
     "expo": "~42.0.1",
+    "expo-ads-admob": "~10.1.2",
     "expo-asset": "~8.3.2",
     "expo-av": "~9.2.3",
     "expo-constants": "~11.0.1",
