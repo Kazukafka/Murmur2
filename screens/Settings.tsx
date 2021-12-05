@@ -56,7 +56,6 @@ const Settings = () => {
 
   return (
     <View>
-      <Text>Settings</Text>
 
       <View style={{ alignItems: "center", }}>
         <AdMobBanner

@@ -55,7 +55,7 @@ function RootNavigator() {
         name="GroupInfoScreen"
         component={GroupInfoScreen}
         options={{
-          title: "GroupInfoScreen",
+          title: "Group Members",
         }}
       />
       <Stack.Screen

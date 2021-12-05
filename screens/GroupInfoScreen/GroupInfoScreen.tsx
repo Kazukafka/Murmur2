@@ -84,7 +84,7 @@ const GroupInfoScreen = () => {
     <View style={styles.root}>
       <Text style={styles.title}>{chatRoom?.name}</Text>
 
-      <Text style={styles.title}>Users ({allUsers.length})</Text>
+      <Text style={styles.title}>Group Members ({allUsers.length})</Text>
       <FlatList
         data={allUsers}
         renderItem={({ item }) => (
