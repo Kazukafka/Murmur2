@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/core';
 import { DataStore } from '@aws-amplify/datastore';
 import { ChatRoom, Message as MessageModel } from '../src/models';
@@ -8,6 +8,8 @@ import MessageInput from '../components/MessageInput';
 import { Auth, SortDirection } from 'aws-amplify';
 // ↑は@aws-amplify/databaseからではなく＠なしaws-amplifyからのimport
 
+import { AdMobBanner } from "expo-ads-admob";
+
 export default function ChatRoomScreen() {
   const [messages, setMessages] = useState<MessageModel[]>([]);
   const [messageReplyTo, setMessageReplyTo] = useState<MessageModel | null>(null);
@@ -15,6 +17,19 @@ export default function ChatRoomScreen() {
 
   const route = useRoute();
   const navigation = useNavigation();
+
+  // テスト用のID
+  // 実機テスト時に誤ってタップしたりすると、広告の配信停止をされたりするため、テスト時はこちらを設定する
+  const testUnitID = Platform.select({
+    // https://developers.google.com/admob/ios/test-ads
+    ios: 'ca-app-pub-6500766760315589/8392796690',
+  });
+
+  // 実際に広告配信する際のID
+  // 広告ユニット（バナー）を作成した際に表示されたものを設定する
+  const adUnitID = Platform.select({
+    ios: 'ca-app-pub-6500766760315589/8392796690',
+  });
 
   useEffect(() => {
     fetchChatRoom();
@@ -74,6 +89,13 @@ export default function ChatRoomScreen() {
 
   return (
     <SafeAreaView style={styles.page}>
+      <View style={{ alignItems: "center", }}>
+        <AdMobBanner
+          bannerSize="smartBannerPortrait"
+          adUnitID={testUnitID}
+          servePersonalizedAds // パーソナライズされた広告の可否。App Tracking Transparencyの対応時に使用。
+        />
+      </View>
       <FlatList
         // data={chatRoomData.messages}
         data={messages}

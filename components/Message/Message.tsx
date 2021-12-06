@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, useWindowDimensions, Pressable, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  useWindowDimensions,
+  Pressable,
+  Alert
+} from 'react-native';
 import { DataStore } from '@aws-amplify/datastore';
 import { User } from '../../src/models';
 import { Auth, Storage } from 'aws-amplify';
-import { S3Image } from 'aws-amplify-react-native';
+import { S3Image } from "aws-amplify-react-native";
 import AudioPlayer from '../AudioPlayer';
 import { AntDesign } from '@expo/vector-icons';
 import { Message as MessageModel } from "../../src/models";
@@ -161,6 +169,7 @@ const Message = (props) => {
   }
 
   return (
+
     <Pressable
       onLongPress={openActionMenu}
       style={[

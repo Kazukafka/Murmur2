@@ -23,7 +23,7 @@ export default function UserItem({
       </View>
 
       {/* <Feather name={isSelected ? 'check-circle' : 'circle'} size={20} color="#4f4f4f" /> */}
-      {/* 上だと１−１のチャットルーム作成と区別できない、よってisSelected=nullをisSelectedのまま残し、↓で調整 */}
+      {/* ↑だと１−１のチャットルーム作成と区別できない、よってisSelected=nullをisSelectedのまま残し、↓で調整 */}
       {isSelected !== undefined && (
         <Feather name={isSelected ? 'check-circle' : 'circle'} size={20} color="#4f4f4f" />
       )}

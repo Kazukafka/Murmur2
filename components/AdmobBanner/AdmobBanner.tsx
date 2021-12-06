@@ -29,7 +29,9 @@ import { useNavigation } from '@react-navigation/core';
 import { box } from 'tweetnacl';
 import { encrypt, getMySecretKey, stringToUint8Array } from '../../utils/crypt';
 
-const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
+import { AdMobBanner } from "expo-ads-admob";
+
+const AdmobBanner = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
   const [message, setMessage] = useState('');
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -265,135 +267,158 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
     resetFields();
   };
 
-  return (
-    <KeyboardAvoidingView
-      style={[styles.root, { height: isEmojiPickerOpen ? "50%" : "auto" }]}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={100}
-    >
-      {messageReplyTo && (
-        <View style={{
-          backgroundColor: "#f2f2f2",
-          padding: 5,
-          flexDirection: 'row',
-          alignSelf: "stretch",
-          justifyContent: "space-between",
-        }}>
-          <View style={{ flex: 1 }}>
-            <Text>Reply to</Text>
-            <MessageComponent message={messageReplyTo} />
-          </View>
-          <Pressable onPress={() => removeMessageReplyTo()}>
-            <AntDesign
-              name="close"
-              size={24}
-              color="black"
-              style={{ margin: 5 }}
-            />
-          </Pressable>
-        </View>
-      )}
-      {image && (
-        <View style={styles.sendImageContainer}>
-          <Image
-            source={{ uri: image }}
-            style={{ width: 100, height: 100, borderRadius: 10 }}
-          />
+  // テスト用のID
+  // 実機テスト時に誤ってタップしたりすると、広告の配信停止をされたりするため、テスト時はこちらを設定する
+  const testUnitID = Platform.select({
+    // https://developers.google.com/admob/ios/test-ads
+    ios: 'ca-app-pub-6500766760315589/8392796690',
+  });
 
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "flex-start",
-              alignSelf: "flex-end"
-            }}
-          >
+  // 実際に広告配信する際のID
+  // 広告ユニット（バナー）を作成した際に表示されたものを設定する
+  const adUnitID = Platform.select({
+    ios: 'ca-app-pub-6500766760315589/8392796690',
+  });
+
+  return (
+
+    <View>
+      <View style={{ alignItems: "center", }}>
+        <AdMobBanner
+          bannerSize="smartBannerPortrait"
+          adUnitID={testUnitID}
+          servePersonalizedAds // パーソナライズされた広告の可否。App Tracking Transparencyの対応時に使用。
+        />
+      </View>
+      <KeyboardAvoidingView
+        style={[styles.root, { height: isEmojiPickerOpen ? "50%" : "auto" }]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={100}
+      >
+        {messageReplyTo && (
+          <View style={{
+            backgroundColor: "#f2f2f2",
+            padding: 5,
+            flexDirection: 'row',
+            alignSelf: "stretch",
+            justifyContent: "space-between",
+          }}>
+            <View style={{ flex: 1 }}>
+              <Text>Reply to</Text>
+              <MessageComponent message={messageReplyTo} />
+            </View>
+            <Pressable onPress={() => removeMessageReplyTo()}>
+              <AntDesign
+                name="close"
+                size={24}
+                color="black"
+                style={{ margin: 5 }}
+              />
+            </Pressable>
+          </View>
+        )}
+        {image && (
+          <View style={styles.sendImageContainer}>
+            <Image
+              source={{ uri: image }}
+              style={{ width: 100, height: 100, borderRadius: 10 }}
+            />
+
             <View
               style={{
-                height: 5,
-                borderRadius: 5,
-                backgroundColor: '#8a2be2',
-                width: `${progress * 100}%`,
-                // marginLeft: "auto",
-                // ↑だとsendImageContainerがあるので左にならないため、も一つ大きなViewで包む
+                flex: 1,
+                justifyContent: "flex-start",
+                alignSelf: "flex-end"
               }}
-            />
+            >
+              <View
+                style={{
+                  height: 5,
+                  borderRadius: 5,
+                  backgroundColor: '#8a2be2',
+                  width: `${progress * 100}%`,
+                  // marginLeft: "auto",
+                  // ↑だとsendImageContainerがあるので左にならないため、も一つ大きなViewで包む
+                }}
+              />
+            </View>
+
+            <Pressable onPress={() => setImage(null)}>
+              <AntDesign
+                name="close"
+                size={24}
+                color="black"
+                style={{ margin: 5 }}
+              />
+            </Pressable>
           </View>
+        )}
 
-          <Pressable onPress={() => setImage(null)}>
-            <AntDesign
-              name="close"
-              size={24}
-              color="black"
-              style={{ margin: 5 }}
+        {soundURI && (<AudioPlayer soundURI={soundURI} />)}
+
+        <View style={styles.row}>
+          <View style={styles.inputContainer}>
+            {/* () => setIsEmojiPickerOpen(true)だと閉じれないので、押したら今の値と真逆の値（trueとFalse）を入れ替える */}
+            <Pressable onPress={() => setIsEmojiPickerOpen((currentValue) => !currentValue)}>
+              <SimpleLineIcons
+                name="emotsmile"
+                size={24} color="#595959"
+                style={styles.icon}
+              />
+            </Pressable>
+
+            <TextInput
+              style={styles.input}
+              value={message}
+              onChangeText={setMessage}
+              placeholder="RumoR message..."
             />
+
+            <Pressable onPress={pickImage}>
+              <Feather
+                name="image"
+                size={24}
+                color="#595959"
+                style={styles.icon}
+              />
+            </Pressable>
+
+            <Pressable onPress={takePhoto}>
+              <Feather
+                name="camera"
+                size={24}
+                color="#595959"
+                style={styles.icon}
+              />
+            </Pressable>
+
+            <Pressable onPressIn={startRecording} onPressOut={stopRecording}>
+              <MaterialCommunityIcons
+                name={recording ? "microphone" : "microphone-outline"}
+                size={24}
+                color={recording ? 'red' : "#595959"}
+                style={styles.icon}
+              />
+            </Pressable>
+          </View>
+          <Pressable onPress={onPress} style={styles.buttonContainer}>
+            {message || image || soundURI ? (
+              <Ionicons name="send" size={18} color="white" />
+            ) : (
+              <AntDesign name="plus" size={24} color="white" />
+            )}
           </Pressable>
         </View>
-      )}
 
-      {soundURI && (<AudioPlayer soundURI={soundURI} />)}
-
-      <View style={styles.row}>
-        <View style={styles.inputContainer}>
-          {/* () => setIsEmojiPickerOpen(true)だと閉じれないので、押したら今の値と真逆の値（trueとFalse）を入れ替える */}
-          <Pressable onPress={() => setIsEmojiPickerOpen((currentValue) => !currentValue)}>
-            <SimpleLineIcons
-              name="emotsmile"
-              size={24} color="#595959"
-              style={styles.icon}
-            />
-          </Pressable>
-
-          <TextInput
-            style={styles.input}
-            value={message}
-            onChangeText={setMessage}
-            placeholder="Murmur message..."
+        {isEmojiPickerOpen && (
+          <EmojiSelector
+            // emoj=>の跡が送信知る部分
+            onEmojiSelected={(emoji) => setMessage(currentMessage => currentMessage + emoji)}
+            columns={8}
           />
-
-          <Pressable onPress={pickImage}>
-            <Feather
-              name="image"
-              size={24}
-              color="#595959"
-              style={styles.icon}
-            />
-          </Pressable>
-
-          <Pressable onPress={takePhoto}>
-            <Feather
-              name="camera"
-              size={24}
-              color="#595959"
-              style={styles.icon}
-            />
-          </Pressable>
-
-          <Pressable onPressIn={startRecording} onPressOut={stopRecording}>
-            <MaterialCommunityIcons
-              name={recording ? "microphone" : "microphone-outline"}
-              size={24}
-              color={recording ? 'red' : "#595959"}
-              style={styles.icon}
-            />
-          </Pressable>
-        </View>
-        <Pressable onPress={onPress} style={styles.buttonContainer}>
-          {message || image || soundURI ? (
-            <Ionicons name="send" size={18} color="white" />
-          ) : (
-            <AntDesign name="plus" size={24} color="white" />
-          )}
-        </Pressable>
-      </View>
-
-      {isEmojiPickerOpen && (
-        <EmojiSelector
-          // emoj=>の跡が送信知る部分
-          onEmojiSelected={(emoji) => setMessage(currentMessage => currentMessage + emoji)}
-          columns={8}
-        />
-      )}
-    </KeyboardAvoidingView>
+        )}
+      </KeyboardAvoidingView>
+    </View>
   )
 }
 
@@ -404,21 +429,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
   },
-  inputContainer: {
-    backgroundColor: '#f2f2f2',
-    flex: 1,
-    marginRight: 10,
-    borderRadius: 25,
-    borderWidth: 1,
-    borderColor: '#dedede',
-    alignItems: 'center',
-    flexDirection: 'row',
-    padding: 5,
-  },
-  input: {
-    flex: 1,
-    marginHorizontal: 5,
-  },
+
   icon: {
     marginHorizontal: 5,
   },
@@ -446,4 +457,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessageInput
+export default AdmobBanner

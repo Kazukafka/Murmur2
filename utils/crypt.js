@@ -43,9 +43,9 @@ export const decrypt = (secretOrSharedKey, messageWithNonce, key) => {
     ? box.open(message, nonce, key, secretOrSharedKey)
     : box.open.after(message, nonce, secretOrSharedKey);
 
-  if (!decrypted) {
-    throw new Error('Could not decrypt message');
-  }
+  // if (!decrypted) {
+  //   throw new Error("Could not decrypt message");
+  // }
 
   const base64DecryptedMessage = decodeUTF8(decrypted);
   return JSON.parse(base64DecryptedMessage);

@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User as UserModel } from '../src/models';
 import { AdMobBanner } from "expo-ads-admob";
 import { Platform } from "react-native";
+import Payment from './Payment';
 
 export const PRIVATE_KEY = "PRIVATE_KEY";
 
@@ -56,7 +57,6 @@ const Settings = () => {
 
   return (
     <View>
-
       <View style={{ alignItems: "center", }}>
         <AdMobBanner
           bannerSize="smartBannerPortrait"
@@ -65,13 +65,18 @@ const Settings = () => {
         />
       </View>
 
-
+      <Payment />
       <Pressable onPress={updateKeyPair} style={{ backgroundColor: 'blue', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: 'white' }}>Update Keypair</Text>
       </Pressable>
 
       <Pressable onPress={logOut} style={{ backgroundColor: '#8a2be2', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: 'white' }}>Logout</Text>
+      </Pressable>
+
+      <Payment />
+      <Pressable onPress={updateKeyPair} style={{ backgroundColor: 'green', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: 'white' }}>This is test</Text>
       </Pressable>
     </View>
   )
