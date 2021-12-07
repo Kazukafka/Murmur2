@@ -1,0 +1,12 @@
+{
+  "AppSyncApiName": "SignalClone",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "APIKeyExpirationEpoch": "-1",
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authSignalClone",
+      "Outputs.UserPoolId"
+    ]
+  }
+}
