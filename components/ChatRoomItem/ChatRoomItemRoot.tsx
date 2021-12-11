@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Image, View, Pressable, ActivityIndicator, AsyncStorage, Alert } from 'react-native';
+import { Text, Image, View, Pressable, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { DataStore } from '@aws-amplify/datastore';
-import { ChatRoomUser, Message, User, User as UserModel } from '../../src/models';
+import { ChatRoomUser, User, Message } from '../../src/models';
 import styles from './styles';
 import { Auth } from 'aws-amplify';
 import moment from 'moment';
-import { generateKeyPair } from '../../utils/crypt';
 
-export const PRIVATE_KEY = "PRIVATE_KEY"
-
-export default function ChatRoomItem({ chatRoom }) {
+export default function ChatRoomItemRoot({ chatRoom }) {
   // Array of User -> "<User[]>' それをinitializeする([])
   // const [users, setUsers] = useState<User[]>([]); // このChatRoomのすべてのUser
   const [user, setUser] = useState<User | null>(null); //user"S"ではなく「displayUser」であることに注意
@@ -18,36 +15,6 @@ export default function ChatRoomItem({ chatRoom }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const navigation = useNavigation();
-
-  const updateKeyPair = async () => {
-    // generate private/public Key
-    const { publicKey, secretKey } = generateKeyPair();
-    console.log(publicKey, secretKey);
-    // save private key to Async storage
-    await AsyncStorage.setItem(PRIVATE_KEY, secretKey.toString());
-    // save public key to UserModel in DataStore
-    const userData = await Auth.currentAuthenticatedUser();
-    const dbUser = await DataStore.query(UserModel, userData.attributes.sub);
-
-    if (!dbUser) {
-      Alert.alert("User not found");
-      return;
-    }
-
-    await DataStore.save(
-      UserModel.copyOf(dbUser, (updated) => {
-        updated.publicKey = publicKey.toString();
-      })
-    );
-
-    console.log(dbUser);
-
-    Alert.alert("Successfully updated the Keypair");
-  };
-
-  // useEffect(() => {
-  //   updateKeyPair();
-  // })
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -59,7 +26,7 @@ export default function ChatRoomItem({ chatRoom }) {
       // user => user.id !== authUser.attributes.subが===だと自分の画像になる
       // 個別のチャットをつなげてグループチャットにするのではなく、人数が二人なのが個別のチャットだと考える
 
-      setUser(fetchedUsers.find(user => user.id !== authUser.attributes.sub) || null);
+      setUser(fetchedUsers.find(user => user.id === authUser.attributes.sub) || null);
       setIsLoading(false);
     };
     fetchUsers();
@@ -92,7 +59,7 @@ export default function ChatRoomItem({ chatRoom }) {
       </View>}
 
       <View style={styles.rightContainer}>
-        <View style={styles.column}>
+        <View style={styles.row}>
           <Text style={styles.name}>{chatRoom.name || user?.name}</Text>
           <Text style={styles.text}>{time}</Text>
         </View>

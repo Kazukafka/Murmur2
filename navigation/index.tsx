@@ -6,7 +6,7 @@
 import { NavigationContainer, DefaultTheme, DarkTheme, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
-import { ColorSchemeName, View, Text, Image, useWindowDimensions, Pressable } from 'react-native';
+import { ColorSchemeName, View, Text, Image, useWindowDimensions, Pressable, FlatList } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -17,6 +17,7 @@ import ChatRoomScreen from '../screens/ChatRoomScreen';
 import HomeScreen from '../screens/HomeScreen';
 import UsersScreen from '../screens/UsersScreen';
 import Settings from '../screens/Settings';
+import Camera from '../screens/Camera';
 
 import ChatRoomHeader from './ChatRoomHeader';
 import GroupInfoScreen from '../screens/GroupInfoScreen';
@@ -63,6 +64,10 @@ function RootNavigator() {
         component={Settings}
       />
       <Stack.Screen
+        name="Camera"
+        component={Camera}
+      />
+      <Stack.Screen
         name="UsersScreen"
         component={UsersScreen}
         options={{
@@ -86,16 +91,15 @@ const HomeHeader = (props) => {
       padding: 10,
       alignItems: 'center',
     }}>
-      <Image
-        source={{ uri: 'https://64.media.tumblr.com/8d5b2654dd80b4e16017b960117a3e1a/8c79d50e0fe4e9b2-b1/s1280x1920/03a0058c1576d078275edbfd0cb6b9d708fb41bc.png' }}
-        style={{ width: 35, height: 35, borderRadius: 8 }}
-      />
-      <Text style={{ flex: 1, textAlign: 'center', marginLeft: 50, fontWeight: 'bold' }}>Murmur</Text>
       <Pressable onPress={() => navigation.navigate('Settings')}>
-        <Feather name="settings" size={24} color="purple" style={{ marginHorizontal: 10 }} />
+        <Feather name="settings" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
+      </Pressable>
+      <Text style={{ flex: 1, textAlign: 'center', marginLeft: 35, fontWeight: 'bold' }}>Murmur</Text>
+      <Pressable onPress={() => navigation.navigate('Camera')}>
+        <Feather name="camera" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
       </Pressable>
       <Pressable onPress={() => navigation.navigate('UsersScreen')}>
-        <Feather name="edit" size={24} color="purple" style={{ marginHorizontal: 10 }} />
+        <Feather name="edit" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
       </Pressable>
     </View>
   )

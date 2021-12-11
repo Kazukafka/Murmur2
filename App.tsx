@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Amplify, { DataStore, Hub, Auth } from 'aws-amplify';
+// @ts-ignore  ↓aws-amplify-react-nativeのエラー無視(yarnでも同じ) from 'https://stackoverflow.com/questions/62512237/how-to-use-aws-amplify-in-react-native-with-typescript-project'
 import { withAuthenticator } from 'aws-amplify-react-native';
 import config from './src/aws-exports';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';

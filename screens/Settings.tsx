@@ -1,19 +1,41 @@
 import { Auth, DataStore } from 'aws-amplify';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Pressable, Alert } from 'react-native';
 import { generateKeyPair } from '../utils/crypt';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User as UserModel } from '../src/models';
+import { ChatRoomUser, User as UserModel } from '../src/models';
 import { AdMobBanner } from "expo-ads-admob";
 import { Platform } from "react-native";
-import Payment from './Payment';
 import StripeApp from './StripeApp';
 import Modal from "react-native-modal";
 // ↑npm ではなく yarnでインストール、本来混ぜるのは非推奨なので注意!!
+import Advertisement from '../components/Advertisement';
+import { AntDesign } from '@expo/vector-icons';
+import { ChatRoom } from '../src/models';
+import { FlatList } from 'react-native-gesture-handler';
+import ChatRoomItemRoot from '../components/ChatRoomItem/ChatRoomItemRoot';
 
 export const PRIVATE_KEY = "PRIVATE_KEY";
 
 const Settings = () => {
+  const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+
+  useEffect(() => {
+    const fetchChatRooms = async () => {
+      const userData = await (await Auth.currentAuthenticatedUser());
+      // ↑二重Awaitしないとデータを取得に時間がかかり再度ログインが必要になる、、、おそらくAuthのデフォ問題？？？
+
+      //Consoleで出力をこまめに確認して、filiterで所有者のChatRoomを、mapでChatRoom単体を取り出す
+
+      const chatRooms = (await DataStore.query(ChatRoomUser))
+        .filter(chatRoomUser => chatRoomUser.user.id === userData.attributes.sub)
+        .map(chatRoomUser => chatRoomUser.chatroom);
+      // console.log(chatRooms);
+      setChatRooms(chatRooms);
+    };
+    fetchChatRooms();
+  }, []);
+
   const logOut = async () => {
     //await DataStore.clear(); <-まじで注意
     Auth.signOut();
@@ -66,35 +88,40 @@ const Settings = () => {
 
   return (
     <View>
-      <View style={{ alignItems: "center", }}>
-        <AdMobBanner
-          bannerSize="smartBannerPortrait"
-          adUnitID={testUnitID}
-          servePersonalizedAds // パーソナライズされた広告の可否。App Tracking Transparencyの対応時に使用。
-        />
-      </View>
+      <Advertisement />
 
-      <Pressable onPress={updateKeyPair} style={{ backgroundColor: 'blue', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+      <Pressable onPress={updateKeyPair} style={{ backgroundColor: '#ba55d3', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: 'white' }}>Update Keypair</Text>
-      </Pressable>
-
-      <Pressable onPress={logOut} style={{ backgroundColor: '#8a2be2', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: 'white' }}>Logout</Text>
       </Pressable>
 
       <Pressable onPress={toggleModal} style={{ backgroundColor: 'green', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
         <Text style={{ color: 'white' }}>Become Premium</Text>
       </Pressable>
 
+      <Pressable onPress={logOut} style={{ backgroundColor: '#8a2be2', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+        <Text style={{ color: 'white' }}>Logout</Text>
+      </Pressable>
+
       <Modal isVisible={isModalVisible}>
         <StripeApp />
         <View style={{ flex: 0.2 }}>
-
-          <Pressable onPress={toggleModal} style={{ backgroundColor: 'royalblue', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={{ color: 'white' }}>Close</Text>
+          <Pressable style={{ alignItems: 'center', justifyContent: 'center' }}>
+            <AntDesign
+              onPress={toggleModal}
+              name='close'
+              size={25}
+              color="white"
+              style={{ margin: 10, alignItems: 'center', justifyContent: 'center' }}
+            />
           </Pressable>
         </View>
       </Modal>
+
+      <FlatList
+        data={chatRooms}
+        renderItem={({ item }) => <ChatRoomItemRoot chatRoom={item} />}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   )
 }

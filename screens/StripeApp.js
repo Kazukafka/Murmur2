@@ -58,8 +58,8 @@ const StripeApp = props => {
     <View style={styles.container}>
 
       <View style={{ flex: 0.1 }}>
-        <View style={{ backgroundColor: 'silver', height: 50, margin: 50, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={{ color: 'black' }}>$10.99 / month</Text>
+        <View style={{ backgroundColor: 'blueviolet', height: 50, margin: 50, borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ color: 'white' }}>$10.99 / month</Text>
         </View>
         <TextInput
           autoCapitalize="none"
@@ -79,9 +79,15 @@ const StripeApp = props => {
             setCardDetails(cardDetails);
           }}
         />
-        <Button onPress={handlePayPress} title="Pay" color="skyblue" disabled={loading} />
+        <Pressable style={{
+          borderColor: "blueviolet",
+          borderWidth: 2, backgroundColor: 'white', height: 50, margin: 10, borderRadius: 50, alignItems: 'center', justifyContent: 'center'
+        }}>
+          <Button onPress={handlePayPress} title="Pay" color="blueviolet" disabled={loading} />
+        </Pressable>
+
       </View>
-    </View>
+    </View >
   );
 };
 export default StripeApp;

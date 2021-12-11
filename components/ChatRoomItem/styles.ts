@@ -5,6 +5,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 10,
   },
+  verticalcontainer: {
+    flexDirection: 'column',
+    padding: 10,
+  },
   image: {
     height: 50,
     width: 50,
@@ -36,10 +40,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  column: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
   name: {
     fontWeight: 'bold',
     fontSize: 18,
     marginBottom: 3,
+  },
+  smallname: {
+    fontSize: 10,
+    alignItems: 'center',
+  },
+  center: {
+
   },
   text: {
     color: 'grey',

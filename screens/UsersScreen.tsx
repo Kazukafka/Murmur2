@@ -48,7 +48,7 @@ export default function UsersScreen() {
       Admin: dbUser,
     };
     if (users.length > 1) {
-      newChatRoomData.name = "New Group";
+      newChatRoomData.name = "Group";
       newChatRoomData.imageUri = "https://64.media.tumblr.com/8d5b2654dd80b4e16017b960117a3e1a/8c79d50e0fe4e9b2-b1/s1280x1920/03a0058c1576d078275edbfd0cb6b9d708fb41bc.png";
     }
     const newChatRoom = await DataStore.save(new ChatRoom(newChatRoomData));
