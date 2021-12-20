@@ -85,8 +85,8 @@ const ChatRoomHeader = ({ id }) => {
           {isGroup ? getUsernames() : getLastOnlineText()}
         </Text>
       </Pressable>
-      <Feather name="camera" size={24} color="blueviolet" style={{ marginHorizontal: 10 }} />
-      <Feather name="edit-2" size={24} color="blueviolet" style={{ marginHorizontal: 10 }} />
+      {/* <Feather name="camera" size={24} color="blueviolet" style={{ marginHorizontal: 10 }} />
+      <Feather name="edit-2" size={24} color="blueviolet" style={{ marginHorizontal: 10 }} /> */}
     </View>
   );
 };

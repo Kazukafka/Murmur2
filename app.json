@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "MurmurV6encryption",
-    "slug": "murmurv6encryption",
+    "name": "MurmurV7payment",
+    "slug": "murmurv7payment",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,7 +20,9 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "googleMobileAdsAppId": "ca-app-pub-6500766760315589/8392796690"
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6500766760315589/8392796690"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -31,7 +33,7 @@
     "web": {
       "favicon": "./assets/images/favicon.png"
     },
-    "description": "murmur -> RumoR -> Murmur2 \nv6 encryption DONE\n",
+    "description": "murmur -> RumoR -> Murmur2 \nv7 payment(branch) DONE\n",
     "githubUrl": "https://github.com/Kazukafka/Murmur2"
   }
 }

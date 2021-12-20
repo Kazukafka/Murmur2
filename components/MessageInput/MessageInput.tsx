@@ -106,6 +106,7 @@ const MessageInput = ({ chatRoom, messageReplyTo, removeMessageReplyTo }) => {
     await Promise.all(users.map((user) => sendMessageToUser(user, authUser.attributes.sub)));
 
     resetFields();
+    //　↑メッセージを送信後にリフレッシュしている
   }
 
   const updateLastMessage = async (newMessage) => {

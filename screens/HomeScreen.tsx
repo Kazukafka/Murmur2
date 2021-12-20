@@ -2,18 +2,24 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { Text, View, StyleSheet, FlatList, RefreshControl } from 'react-native';
 import { Auth, DataStore } from 'aws-amplify';
-import { ChatRoom, ChatRoomUser } from '../src/models';
+import { ChatRoom, User, ChatRoomUser } from '../src/models';
 import ChatRoomItem from '../components/ChatRoomItem';
 import Advertisement from '../components/Advertisement';
 
 import UserItem from '../components/UserItem';
 import ChatRoomItemHorizontal from '../components/ChatRoomItem/ChatRoomItemHorizontal';
 import { ScrollView } from 'react-native-gesture-handler';
+import UsersScreen from './UsersScreen';
 
 const sleep = (msec: number | undefined) => new Promise(resolve => setTimeout(resolve, msec));
 
 export default function TabOneScreen() {
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    DataStore.query(User).then(setUsers);
+  }, [])
 
   // const [text, setText] = useState('上に引っ張って更新');
 
@@ -51,15 +57,16 @@ export default function TabOneScreen() {
       style={styles.page}>
       <Advertisement />
 
-      <View>
-        {/* <Text>{text}</Text> */}
-        <FlatList
-          data={chatRooms}
-          renderItem={({ item }) => <ChatRoomItemHorizontal chatRoom={item} />}
-          showsVerticalScrollIndicator={false}
-          horizontal
-        />
-      </View>
+      <FlatList
+        data={users}
+        renderItem={({ item }) => (
+          <UserItem
+            user={item}
+          />
+        )}
+        showsVerticalScrollIndicator={false}
+        horizontal
+      />
 
       <FlatList
         data={chatRooms}

@@ -99,7 +99,7 @@ const HomeHeader = (props) => {
         <Feather name="camera" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
       </Pressable>
       <Pressable onPress={() => navigation.navigate('UsersScreen')}>
-        <Feather name="edit" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
+        <Feather name="edit-3" size={25} color="blueviolet" style={{ marginHorizontal: 10 }} />
       </Pressable>
     </View>
   )
