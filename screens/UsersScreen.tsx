@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { View, StyleSheet, FlatList, Pressable, Text, SafeAreaView, Button, Alert } from 'react-native';
 import UserItem from '../components/UserItem';
@@ -46,7 +46,11 @@ export default function UsersScreen() {
       Admin: dbUser,
     };
     if (users.length > 1) {
-      newChatRoomData.name = groupName;
+      if (groupName == "") {
+        newChatRoomData.name = "GROUP";
+      } else {
+        newChatRoomData.name = groupName;
+      }
       newChatRoomData.imageUri = "https://64.media.tumblr.com/8d5b2654dd80b4e16017b960117a3e1a/8c79d50e0fe4e9b2-b1/s1280x1920/03a0058c1576d078275edbfd0cb6b9d708fb41bc.png";
     }
     const newChatRoom = await DataStore.save(new ChatRoom(newChatRoomData));
@@ -104,26 +108,29 @@ export default function UsersScreen() {
           <NewGroupButton onPress={() => setIsNewGroup(!isNewGroup)} />
         )}
       />
-      {isNewGroup && (
-        <View>
-          <TextInput style={styles.input}
-            underlineColorAndroid="transparent"
-            placeholder="Group Name"
-            placeholderTextColor="#9a73ef"
-            autoCapitalize="none"
-            onChangeText={setGroupName}
-          // onChangeText = {this.handleGroupName}
-          />
-        </View>
-      )}
-      {isNewGroup && (
-        <Pressable style={styles.button} onPress={saveGroup}>
-          <Text style={styles.buttonText}>
-            Save Group ({selectedUsers.length})
-          </Text>
-        </Pressable>
-      )}
-    </SafeAreaView>
+      {
+        isNewGroup && (
+          <View>
+            <TextInput style={styles.input}
+              underlineColorAndroid="transparent"
+              placeholder="  Please enter the Group Name"
+              placeholderTextColor="#9a73ef"
+              autoCapitalize="none"
+              onChangeText={setGroupName}
+            />
+          </View>
+        )
+      }
+      {
+        isNewGroup && (
+          <Pressable style={styles.button} onPress={saveGroup}>
+            <Text style={styles.buttonText}>
+              Save Group ({selectedUsers.length})
+            </Text>
+          </Pressable>
+        )
+      }
+    </SafeAreaView >
 
   );
 }

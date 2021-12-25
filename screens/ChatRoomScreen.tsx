@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
-import { useRoute, useNavigation } from '@react-navigation/core';
+import { useRoute } from '@react-navigation/core';
 import { DataStore } from '@aws-amplify/datastore';
 import { ChatRoom, Message as MessageModel } from '../src/models';
 import Message from '../components/Message';
@@ -15,7 +15,6 @@ export default function ChatRoomScreen() {
   const [chatRoom, setChatRoom] = useState<ChatRoom | null>(null);
 
   const route = useRoute();
-  const navigation = useNavigation();
 
   useEffect(() => {
     fetchChatRoom();
